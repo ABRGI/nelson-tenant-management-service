@@ -1,0 +1,20 @@
+{
+  "name": "nelson-tenant-management-service",
+  "version": "1.0.0",
+  "description": "Tenant management service for Nelson",
+  "main": "index.js",
+  "scripts": {
+    "remote": "npx nodemon index_remote.js",
+    "local": "LOCAL=true COGNITO_LOGIN_URL=https://testnelsonmanagementlogin.auth.eu-central-1.amazoncognito.com ENV_REGION=eu-central-1 TENANT_TABLE=test-nelson-tenants npx nodemon index_local.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sandeep Baynes",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.241.0",
+    "@aws-sdk/util-dynamodb": "^3.241.0",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20"
+  }
+}
