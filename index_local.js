@@ -7,8 +7,9 @@ var app = express();
 app.use(bodyParser.json());
 
 app.get('/api/tenant/listtenants', function (req, res) {
-    console.log(`List tenants function accessed`);
-    listtenants.handler().then(function (ret) {
+    console.log(`List tenants function accessed with data`);
+    console.log(req.query);
+    listtenants.handler({ queryStringParameters: req.query || {} }).then(function (ret) {
         res.statusCode = 200;
         res.send(JSON.parse(ret.body));
     }).catch(function (err) {
