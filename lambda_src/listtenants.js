@@ -8,7 +8,7 @@
     optional - environmentids: Comma separated environment id. Tenant ids is preferred if environment id is specified
 */
 
-const { DynamoDB, ReturnConsumedCapacity } = require("@aws-sdk/client-dynamodb");
+const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { unmarshall, marshall } = require("@aws-sdk/util-dynamodb");
 
 const dynamoProps = { region: process.env.ENV_REGION }
@@ -42,7 +42,7 @@ exports.handler = async (event) => {
                 RequestItems: {
                     [process.env.TENANT_TABLE]: {},
                 },
-                ReturnConsumedCapacity: ReturnConsumedCapacity.INDEXES
+                ReturnConsumedCapacity: "INDEXES"
             }
             var ids = [];
             tenantids.split(',').forEach(tenantid => {
@@ -76,7 +76,6 @@ exports.handler = async (event) => {
         response.tenants = tenants;
     }
     catch (err) {
-        console.log(err);
         return {
             statusCode: 500,
             body: JSON.stringify({
