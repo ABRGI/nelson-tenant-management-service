@@ -5,9 +5,10 @@
     
     parameters:
     optional - tenantids: Comma separated query string paramter containing list of tenant ids. If not specified, all tenants are loaded
+    optional - environmentids: Comma separated environment id. Tenant ids is preferred if environment id is specified
 */
 
-const { DynamoDB } = require("@aws-sdk/client-dynamodb");
+const { DynamoDB, ReturnConsumedCapacity } = require("@aws-sdk/client-dynamodb");
 const { unmarshall, marshall } = require("@aws-sdk/util-dynamodb");
 
 const dynamoProps = { region: process.env.ENV_REGION }
@@ -20,49 +21,62 @@ if (process.env.LOCAL) {
 const dynamoClient = new DynamoDB(dynamoProps);
 
 exports.handler = async (event) => {
-    const { tenantids } = event.queryStringParameters || '';
+    const { tenantids, environmentids } = event.queryStringParameters || '';
     var response = {};
+    var tenants = [];
     try {
         if (!tenantids || tenantids == '') {
             var dynamoResponse = await dynamoClient.scan({
                 TableName: process.env.TENANT_TABLE,
                 ReturnConsumedCapacity: "INDEXES"
             });
-            var unmarshalledData = [];
             dynamoResponse.Items.forEach(function (item) {
-                unmarshalledData.push(unmarshall(item));
+                tenants.push(unmarshall(item));
             });
             response = {
-                tenants: unmarshalledData,
                 consumedcapacityUnits: dynamoResponse.ConsumedCapacity.CapacityUnits,
             };
         }
         else {
+            var dynamoProps = {
+                RequestItems: {
+                    [process.env.TENANT_TABLE]: {},
+                },
+                ReturnConsumedCapacity: ReturnConsumedCapacity.INDEXES
+            }
             var ids = [];
             tenantids.split(',').forEach(tenantid => {
                 ids.push(marshall({
                     id: tenantid
                 }));
             });
-            var dynamoResponse = await dynamoClient.batchGetItem({
-                RequestItems: {
-                    [process.env.TENANT_TABLE]: {
-                        Keys: ids
-                    },
-                },
-                ReturnConsumedCapacity: "INDEXES"
-            });
-            var unmarshalledData = [];
+            dynamoProps.RequestItems[process.env.TENANT_TABLE].Keys = ids;
+            var dynamoResponse = await dynamoClient.batchGetItem(dynamoProps);
             dynamoResponse.Responses[process.env.TENANT_TABLE].forEach(function (item) {
-                unmarshalledData.push(unmarshall(item));
+                tenants.push(unmarshall(item));
             });
             response = {
-                tenants: unmarshalledData,
                 consumedcapacityUnits: dynamoResponse.ConsumedCapacity.CapacityUnits
-            }
+            };
         }
+        if (environmentids && environmentids != '') {
+            var filteredTenants = [];
+            tenants.forEach(tenant => {
+                var newTenant = {
+                    id: tenant.id,
+                    tenantname: tenant.tenantname,
+                    environments: tenant.environments.filter(environment => environmentids.indexOf(environment.id) > -1)
+                };
+                if (newTenant.environments && newTenant.environments.length > 0) {
+                    filteredTenants.push(newTenant);
+                }
+            });
+            tenants = filteredTenants;
+        }
+        response.tenants = tenants;
     }
     catch (err) {
+        console.log(err);
         return {
             statusCode: 500,
             body: JSON.stringify({
