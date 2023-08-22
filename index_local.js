@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const listtenants = require('./lambda_src/listtenants');
 const managetenantprops = require('./lambda_src/manageTenantProps');
 
-const port = 8000;
+const port = process.env.PORT;
 var app = express();
 app.use(bodyParser.json());
 
