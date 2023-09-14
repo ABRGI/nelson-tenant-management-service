@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "d71b74b5-5648-466d-a5dd-db93e1307c07",
+		"name": "tenant-management-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1502780",
+		"_collection_link": "https://antasevis.postman.co/workspace/Nelson~b358c449-b4b9-4d81-8fab-8172e04f6762/collection/1502780-d71b74b5-5648-466d-a5dd-db93e1307c07?action=share&source=collection_link&creator=1502780"
+	},
+	"item": [
+		{
+			"name": "ListTenants",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}:{{tenantserviceport}}/api/tenant/listtenants?environmentids=f1958867-3763-45d5-b7f0-916b5e8b42ac&hotelids=00c74128-217a-4b57-8a86-bec7c2095777,2ff12433-22ef-4f75-baf1-ab73eb7e1f26,5da0d2ea-1c21-4642-8070-f22c28a0901e",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{tenantserviceport}}",
+					"path": [
+						"api",
+						"tenant",
+						"listtenants"
+					],
+					"query": [
+						{
+							"key": "environmentids",
+							"value": "f1958867-3763-45d5-b7f0-916b5e8b42ac"
+						},
+						{
+							"key": "tenantids",
+							"value": "b406b8e4-e220-4ece-925e-ed2d228afd52",
+							"disabled": true
+						},
+						{
+							"key": "hotelids",
+							"value": "00c74128-217a-4b57-8a86-bec7c2095777,2ff12433-22ef-4f75-baf1-ab73eb7e1f26,5da0d2ea-1c21-4642-8070-f22c28a0901e"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTenantProperties",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{domain}}:{{tenantserviceport}}/api/tenant/:tenantname/:environmentname",
+					"host": [
+						"{{domain}}"
+					],
+					"port": "{{tenantserviceport}}",
+					"path": [
+						"api",
+						"tenant",
+						":tenantname",
+						":environmentname"
+					],
+					"variable": [
+						{
+							"key": "tenantname",
+							"value": "Omena"
+						},
+						{
+							"key": "environmentname",
+							"value": "Test3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateTenantProperties",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tenantname\": \"Omena\",\n    \"environment\": \"Test3\",\n    \"origin\": \"test3.omenahotels.com\",\n    \"managementorigin\": \"test3.omenahotels.com/management\",\n    \"styling\": {\n        \"themecolor\": \"#000\",\n        \"borderradius\": 5,\n        \"logopath\": \"https://test3.omenahotels.com/logo\",\n        \"fontpath\": \"https://test3.omenahotels.com/defaultfont\"\n    },\n    \"features\": {\n        \"membership\": true,\n        \"ecilco\": true,\n        \"breakfast\": true,\n        \"compensate\": true,\n        \"extrabeds\": true,\n        \"languages\": [\n            \"en\",\n            \"fi\",\n            \"ru\"\n        ],\n        \"roomtextdescription\": true,\n        \"muipages\": [\n            \"admin\",\n            \"booking\"\n        ],\n        \"pricingtabfeatures\": [\n            \"baseprice\",\n            \"nprice\"\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domain}}{{tenantserviceport}}/api/tenant/:tenantname/:environmentname",
+					"host": [
+						"{{domain}}{{tenantserviceport}}"
+					],
+					"path": [
+						"api",
+						"tenant",
+						":tenantname",
+						":environmentname"
+					],
+					"variable": [
+						{
+							"key": "tenantname",
+							"value": "Omena"
+						},
+						{
+							"key": "environmentname",
+							"value": "Test3"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
