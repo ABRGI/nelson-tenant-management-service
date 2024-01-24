@@ -31,7 +31,8 @@ exports.handler = async (event) => {
                 ReturnConsumedCapacity: "INDEXES"
             });
             dynamoResponse.Items.forEach(function (item) {
-                tenants.push(unmarshall(item));
+                var tenant = unmarshall(item);
+                tenants.push(cleanUpExpiredHotelsInTenant(tenant));
             });
             response = {
                 consumedcapacityUnits: dynamoResponse.ConsumedCapacity.CapacityUnits,
@@ -53,7 +54,8 @@ exports.handler = async (event) => {
             dynamoProps.RequestItems[process.env.TENANT_TABLE].Keys = ids;
             var dynamoResponse = await dynamoClient.batchGetItem(dynamoProps);
             dynamoResponse.Responses[process.env.TENANT_TABLE].forEach(function (item) {
-                tenants.push(unmarshall(item));
+                var tenant = unmarshall(item);
+                tenants.push(cleanUpExpiredHotelsInTenant(tenant));
             });
             response = {
                 consumedcapacityUnits: dynamoResponse.ConsumedCapacity.CapacityUnits
@@ -112,3 +114,23 @@ exports.handler = async (event) => {
         body: JSON.stringify(response)
     };
 };
+
+function cleanUpExpiredHotelsInTenant(tenant) {
+    
+    var cleanTenant = {
+        id: tenant.id,
+        tenantname: tenant.tenantname,
+        environments: []
+    };
+    tenant.environments.forEach(environment => {
+        cleanTenant.environments.push({
+            id: environment.id,
+            name: environment.name,
+            sitehost: environment.sitehost,
+            type: environment.type,
+            managementsitehost: environment.managementsitehost,
+            hotels: environment.hotels.filter(hotel => hotel.available)
+        });
+    });
+    return cleanTenant;
+}
