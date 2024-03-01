@@ -3,7 +3,7 @@
 */
 const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
 
-const s3Props = { region: process.env.ENV_REGION }
+const s3Props = { region: process.env.ENV_REGION };
 if (process.env.LOCAL) {
     s3Props.credentials = {
         accessKeyId: process.env.ACCESSKEY,
@@ -79,4 +79,4 @@ exports.handler = async (event) => {
         statusCode: 200,
         body: JSON.stringify(response)
     };
-}
+};
