@@ -1,0 +1,28 @@
+# File directly publishes to lambda instead of a version. 
+# Change this behavior in future if it is impacting live users during the deployment
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+  pre_build:
+    commands:
+      - echo Pre build phase started on `date`
+      - echo copy list tenants function to ../listtenantsfn; mkdir ../listtenantsfn; cp lambda_src/listtenants.js ../listtenantsfn/index.js;
+      - echo copy manage tenant props function to ../managetenantpropsfn; mkdir ../managetenantpropsfn; cp lambda_src/managetenantprops.js ../managetenantpropsfn/index.js;
+      - echo Pre build phase completed on `date`
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo zip list tenants function; cd ../listtenantsfn; zip -r listtenantsfn.zip .;
+      - echo zip manage tenant props function; cd ../managetenantpropsfn; zip -r managetenantpropsfn.zip .;
+      - cd ..
+      - echo Build completed `date`
+  post_build:
+    commands:
+      - echo Lambda deployment started on `date`
+      - echo publish list tenants fn; aws lambda update-function-code --function-name $LIST_TENANTS_FUNCTION_NAME --zip-file fileb://./loginfn/loginfn.zip;
+      - echo publish manage tenant props fn; aws lambda update-function-code --function-name $MANAGE_TENANT_PROPERTIES_FUNCTION_NAME --zip-file fileb://./managetenantpropsfn/managetenantpropsfn.zip;
+      - echo Lambda deployment completed on `date`
