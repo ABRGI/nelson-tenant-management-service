@@ -23,6 +23,6 @@ phases:
   post_build:
     commands:
       - echo Lambda deployment started on `date`
-      - echo publish list tenants fn; aws lambda update-function-code --function-name $LIST_TENANTS_FUNCTION_NAME --zip-file fileb://./loginfn/loginfn.zip;
+      - echo publish list tenants fn; aws lambda update-function-code --function-name $LIST_TENANTS_FUNCTION_NAME --zip-file fileb://./listtenantsfn/listtenantsfn.zip;
       - echo publish manage tenant props fn; aws lambda update-function-code --function-name $MANAGE_TENANT_PROPERTIES_FUNCTION_NAME --zip-file fileb://./managetenantpropsfn/managetenantpropsfn.zip;
       - echo Lambda deployment completed on `date`
