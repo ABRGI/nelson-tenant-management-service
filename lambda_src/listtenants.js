@@ -21,7 +21,7 @@ if (process.env.LOCAL) {
 const dynamoClient = new DynamoDB(dynamoProps);
 
 exports.handler = async (event) => {
-    const { tenantids, environmentids, hotelids } = event.queryStringParameters || '';
+    const { tenantids, environmentids, hotelids, includeterminated } = event.queryStringParameters || '';
     var response = {};
     var tenants = [];
     try {
@@ -99,6 +99,9 @@ exports.handler = async (event) => {
             });
             tenants = filteredTenants;
         }
+        if (!includeterminated || includeterminated != 'true') {
+            tenants = tenants.filter(tenant => !tenant.terminateddate);
+        }
         response.tenants = tenants;
     }
     catch (err) {
@@ -116,7 +119,6 @@ exports.handler = async (event) => {
 };
 
 function cleanUpExpiredHotelsInTenant(tenant) {
-    
     var cleanTenant = {
         id: tenant.id,
         tenantname: tenant.tenantname,
@@ -132,5 +134,8 @@ function cleanUpExpiredHotelsInTenant(tenant) {
             hotels: environment.hotels.filter(hotel => hotel.available)
         });
     });
+    if (tenant.terminateddate) {
+        cleanTenant.terminateddate = tenant.terminateddate;
+    }
     return cleanTenant;
 }
