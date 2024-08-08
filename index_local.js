@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const listtenants = require('./lambda_src/listtenants');
-const managetenantprops = require('./lambda_src/manageTenantProps');
+const managetenantprops = require('./lambda_src/managetenantprops');
 
 const port = process.env.PORT;
 var app = express();
