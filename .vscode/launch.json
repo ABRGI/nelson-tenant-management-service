@@ -17,7 +17,7 @@
                 "${workspaceFolder}/**/*.js"
             ],
             "env": {
-                "PORT": "8000",
+                "PORT": "4004",
                 "LOCAL": "true",
                 "ENV_REGION": "eu-central-1",
                 "TENANT_TABLE": "nelson-tenants",
@@ -39,7 +39,7 @@
                 "${workspaceFolder}/**/*.js"
             ],
             "env": {
-                "PORT": "8000",
+                "PORT": "4004",
                 "LOCAL": "true",
                 "ENV_REGION": "eu-central-1",
                 "TENANT_TABLE": "test-nelson-tenants",
