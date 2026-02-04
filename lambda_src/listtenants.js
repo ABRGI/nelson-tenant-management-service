@@ -86,6 +86,7 @@ exports.handler = async (event) => {
                         sitehost: environment.sitehost,
                         type: environment.type,
                         managementsitehost: environment.managementsitehost,
+                        allowSAP: environment.allowSAP,
                         hotels: environment.hotels.filter(hotel => hotelids.indexOf(hotel.id) > -1)
                     };
                     if (newEnvironment.hotels && newEnvironment.hotels.length > 0) {
@@ -131,6 +132,7 @@ function cleanUpExpiredHotelsInTenant(tenant) {
             sitehost: environment.sitehost,
             type: environment.type,
             managementsitehost: environment.managementsitehost,
+            allowSAP: environment.allowSAP,
             hotels: environment.hotels.filter(hotel => hotel.available)
         });
     });
